@@ -86,7 +86,8 @@ fun Greeting(name: String, studentID: String, modifier: Modifier) {
 fun BottomSection(explicitBtnText: String, implicitBtnText: String) {
     val mContext = LocalContext.current
     val sendIntent = Intent()
-    sendIntent.setAction("com.example.assignment2.InfoActivity")
+    sendIntent.setAction(Intent.ACTION_SEND)
+    sendIntent.setPackage("com.example.assignment2")
     sendIntent.setType("text/plain")
     Row(
         verticalAlignment = Alignment.Bottom,
