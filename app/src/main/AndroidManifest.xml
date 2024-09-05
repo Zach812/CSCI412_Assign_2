@@ -15,10 +15,6 @@
         <activity
             android:name=".InfoActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="com.example.assignment2.InfoActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"

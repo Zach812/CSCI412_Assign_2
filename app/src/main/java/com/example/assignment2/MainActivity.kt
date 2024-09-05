@@ -85,7 +85,9 @@ fun Greeting(name: String, studentID: String, modifier: Modifier) {
 @Composable
 fun BottomSection(explicitBtnText: String, implicitBtnText: String) {
     val mContext = LocalContext.current
-    val sendIntent = Intent("com.example.assignment2.InfoActivity")
+    val sendIntent = Intent()
+    sendIntent.setAction("com.example.assignment2.InfoActivity")
+    sendIntent.setType("text/plain")
     Row(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Center,
@@ -96,7 +98,7 @@ fun BottomSection(explicitBtnText: String, implicitBtnText: String) {
             onClick = { mContext.startActivity(Intent(mContext, InfoActivity::class.java)) })
         NavButton(
             message = implicitBtnText,
-            onClick = {mContext.startActivity(sendIntent)})
+            onClick = { mContext.startActivity(sendIntent) })
     }
 }
 
