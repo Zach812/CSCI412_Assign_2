@@ -9,7 +9,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,12 +58,18 @@ class MainActivity : ComponentActivity() {
                         )
                         BottomSection(
                             explicitBtnText = "Start Activity Explicitly",
-                            implicitBtnText = "Start Activity Implicitly"
+                            implicitBtnText = "Start Activity Implicitly",
+                            imageActivityTxt = "View Image Activity"
                         )
                     }
                 }
             }
         }
+    }
+
+    companion object {
+        // Define the pic id
+        private const val pic_id = 123
     }
 }
 
@@ -79,7 +86,8 @@ fun Greeting(name: String, studentID: String, modifier: Modifier) {
                 .clip(
                     RoundedCornerShape(16.dp)
                 )
-                .background(Color(0xFF073926)).padding(7.dp)
+                .background(Color(0xFF073926))
+                .padding(7.dp)
                 .size(300.dp)
                 .align(Alignment.CenterHorizontally)
         )
@@ -99,17 +107,17 @@ fun Greeting(name: String, studentID: String, modifier: Modifier) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun BottomSection(explicitBtnText: String, implicitBtnText: String) {
+fun BottomSection(explicitBtnText: String, implicitBtnText: String, imageActivityTxt: String) {
     val mContext = LocalContext.current
     val sendIntent = Intent()
     sendIntent.setAction(Intent.ACTION_SEND)
     sendIntent.setPackage("com.example.assignment2")
     sendIntent.setType("text/plain")
-    Row(
-        verticalAlignment = Alignment.Bottom,
+    FlowRow(
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         NavButton(
             message = explicitBtnText,
@@ -117,12 +125,16 @@ fun BottomSection(explicitBtnText: String, implicitBtnText: String) {
         NavButton(
             message = implicitBtnText,
             onClick = { mContext.startActivity(sendIntent) })
+        NavButton(
+            message = imageActivityTxt,
+            onClick = { mContext.startActivity(Intent(mContext, CameraActivity::class.java)) })
     }
 }
 
 @Composable
 fun NavButton(message: String, onClick: () -> Unit) {
     Button(
+
         onClick = onClick,
         colors = ButtonColors(
             containerColor = Color(0xFF073926),
@@ -130,7 +142,9 @@ fun NavButton(message: String, onClick: () -> Unit) {
             disabledContainerColor = Color(0xFF073926),
             disabledContentColor = Color(0xFF073926)
         ),
-        modifier = Modifier.width(200.dp)
+        modifier = Modifier
+            .width(180.dp)
+            .padding(3.dp)
     ) {
         Text(
             text = message, fontSize = 20.sp,
