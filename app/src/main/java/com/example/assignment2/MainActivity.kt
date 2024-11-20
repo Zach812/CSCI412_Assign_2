@@ -1,7 +1,10 @@
 package com.example.assignment2
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -33,12 +36,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.assignment2.ui.theme.Assignment2Theme
 
 class MainActivity : ComponentActivity() {
+    private val REQUEST_CODE = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Check if the custom permission is granted
+        if (ContextCompat.checkSelfPermission(this, "com.example.assignment2.MSE412")
+            != PackageManager.PERMISSION_GRANTED) {
+            // Request the custom permission
+            ActivityCompat.requestPermissions(this,
+                arrayOf("com.example.assignment2.MSE412"), REQUEST_CODE)
+        } else {
+            // Permission already granted
+        }
         setContent {
             Assignment2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -59,7 +75,8 @@ class MainActivity : ComponentActivity() {
                         BottomSection(
                             explicitBtnText = "Start Activity Explicitly",
                             implicitBtnText = "Start Activity Implicitly",
-                            imageActivityTxt = "View Image Activity"
+                            imageActivityTxt = "View Image Activity",
+                            baseContext
                         )
                     }
                 }
@@ -109,7 +126,7 @@ fun Greeting(name: String, studentID: String, modifier: Modifier) {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun BottomSection(explicitBtnText: String, implicitBtnText: String, imageActivityTxt: String) {
+fun BottomSection(explicitBtnText: String, implicitBtnText: String, imageActivityTxt: String, context: Context) {
     val mContext = LocalContext.current
     val sendIntent = Intent()
     sendIntent.setAction(Intent.ACTION_SEND)
@@ -121,10 +138,26 @@ fun BottomSection(explicitBtnText: String, implicitBtnText: String, imageActivit
     ) {
         NavButton(
             message = explicitBtnText,
-            onClick = { mContext.startActivity(Intent(mContext, InfoActivity::class.java)) })
+            onClick = {
+                if (ContextCompat.checkSelfPermission(context, "com.example.assignment2.MSE412")
+                    == PackageManager.PERMISSION_GRANTED) {
+                mContext.startActivity(Intent(mContext, InfoActivity::class.java))
+                }
+                else {
+                    Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            })
         NavButton(
             message = implicitBtnText,
-            onClick = { mContext.startActivity(sendIntent) })
+            onClick = {
+                if (ContextCompat.checkSelfPermission(context, "com.example.assignment2.MSE412")
+                    == PackageManager.PERMISSION_GRANTED) {
+                    mContext.startActivity(sendIntent)
+                }
+                else {
+                    Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            })
         NavButton(
             message = imageActivityTxt,
             onClick = { mContext.startActivity(Intent(mContext, CameraActivity::class.java)) })
